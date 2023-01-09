@@ -31,19 +31,33 @@ function getWeather() {
   navigator.geolocation.getCurrentPosition((success) => {
     console.log(success);
     //const apiKey = '';
-    let {latitude, longitude } = success.coords;
+    let { latitude, longitude } = success.coords;
     //let {API_Key} = apiKey;
-    
-
     fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=02de89be83267d4702049938b828e151&units=imperial`).then(res => res.json().then(data => {
       console.log(data);
       showWeatherData(data);
-
     }))
 
   })
 }
+getWeather();
 
-function showWeatherData (data) {
-  
+function showWeatherData(data) {
+  let { humidity } = data.list[0].main;
+  let { pressure } = data.list[0].main;
+  let { speed } = data.list[0].wind;
+  currWeatherItemsEl.innerHTML =
+    `<div class="weather-item">
+  <div>Humidity</div>
+  <div>${humidity}%</div>
+</div>
+<div class="weather-item">
+  <div>Pressure</div>
+  <div>${pressure}</div>
+</div>
+<div class="weather-item">
+<div>Wind Speed</div>
+<div>${speed} mph</div>
+`;
+
 }
