@@ -23,6 +23,9 @@ setInterval(() => {
   const ampm = hour >= 12 ? 'PM' : 'AM'
   timeEl.innerHTML = hoursIn12HrFormat + ':' + minute + '' + `<span id='am-pm'>${ampm}</span`
 
+  timeEl.innerHTML = (hoursIn12HrFormat < 10 ? '0' + hoursIn12HrFormat : hoursIn12HrFormat) + ':' + (minute < 10 ? '0' + minute : minute) + ' ' + `<span id="am-pm">${ampm}</span>`
+  dateEl.innerHTML = days[day] + ', ' + date + ' ' + months[month]
+
 }, 1000);
 
 getWeather();
@@ -43,6 +46,10 @@ function getWeather() {
 getWeather();
 
 function showWeatherData(data) {
+
+
+  // timeZoneEl.innerHTML = data.timezone;
+  // countryEl.innerHTML = data.lat + 'N' + data.lon + 'W'
   let { humidity } = data.list[0].main;
   let { pressure } = data.list[0].main;
   let { speed } = data.list[0].wind;
@@ -59,22 +66,29 @@ function showWeatherData(data) {
 <div>Wind Speed</div>
 <div>${speed} mph</div>
 `;
-console.log('test');
+  console.log('test');
   let otherDayForecast = ''
-  days.forEach((d, idx) => {
+  days.forEach((days, idx) => {
     if (idx == 0) {
+      currentTempEl.innerHTML = `
+      <img src="http://openweathermap.org/img/wn/${data.list[0].weather[0].icon}@4x.png" alt="weather icon" class="w-icon">
+      <div class="other">
+        <div class="day">${window.moment(days.dt * 1000).format('ddd')}</div>
+        <div class="temp">${data.list[0].main.temp_min}&#176; F</div>
+        <div class="temp">${data.list[0].main.temp_max}&#176; F</div>
+      </div>
+      `
     } else {
       otherDayForecast += `
       <div class="weather-forecast-item">
-          <div class="day"></div>
-          <img src="http://openweathermap.org/img/wn/${data.list[0].weather.icon}@2x.png" alt="weather icon" class="w-icon">
-          <div class="temp">${data.list[0].main.temp_min}&#176; F</div>
-          <div class="temp">${data.list[0].main.temp_max}&#176; F</div>
+          <div class="day">${window.moment(days.dt * 1000).format('ddd')}</div>
+          <img src="http://openweathermap.org/img/wn/${data.list[0].weather[0].icon}@2x.png" alt="weather icon" class="w-icon">
+          <div class="temp">${data.list[8].main.temp_min}&#176; F</div>
+          <div class="temp">${data.list[8].main.temp_max}&#176; F</div>
         </div>
       `
+      weatherForecastEl.innerHTML = otherDayForecast;
     }
   })
 
 }
-
-showWeatherData()
