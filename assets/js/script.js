@@ -5,7 +5,7 @@ const timeZoneEl = document.getElementById('time-zone');
 const countryEl = document.getElementById('country');
 const weatherForecastEl = document.getElementById('weather-forecast');
 const currentTempEl = document.getElementById('current-temp');
-
+const daily = document.getElementById('future')
 var today = dayjs().format('dddd, MMMM D, YYYY');
 dateEl.textContent = today;
 
@@ -59,5 +59,22 @@ function showWeatherData(data) {
 <div>Wind Speed</div>
 <div>${speed} mph</div>
 `;
+console.log('test');
+  let otherDayForecast = ''
+  days.forEach((d, idx) => {
+    if (idx == 0) {
+    } else {
+      otherDayForecast += `
+      <div class="weather-forecast-item">
+          <div class="day"></div>
+          <img src="http://openweathermap.org/img/wn/${data.list[0].weather.icon}@2x.png" alt="weather icon" class="w-icon">
+          <div class="temp">${data.list[0].main.temp_min}&#176; F</div>
+          <div class="temp">${data.list[0].main.temp_max}&#176; F</div>
+        </div>
+      `
+    }
+  })
 
 }
+
+showWeatherData()
