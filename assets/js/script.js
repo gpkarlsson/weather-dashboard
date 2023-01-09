@@ -8,14 +8,44 @@ const currentTempEl = document.getElementById('current-temp');
 const daily = document.getElementById('future')
 var today = dayjs().format('dddd, MMMM D, YYYY');
 dateEl.textContent = today;
+var local = document.getElementById('localstorage');
 
+var inputCity = document.getElementById('inputCity');
+var searchBtn = document.getElementById('searchBtn');
+var searchValues = ['madison',];
+
+//Saves to local storage
+searchValues = JSON.parse(localStorage.getItem('inputCity'));
+var list = document.getElementById('list');
+//Runs searchFunc function on click
+searchBtn.addEventListener('click', searchFunc);
+
+//Pushes inputCity value to searchValues array 
+function searchFunc() {
+  searchValues.push(inputCity);
+  localStorage.setItem('inputCity', JSON.stringify(searchValues));
+  appendToPage();
+  console.log(searchValues);
+}
+
+//appends search results to unordere list on page
+function appendToPage() {
+  for (i = 0; i < searchValues.length; i++) {
+    var listItem = document.createElement('li');
+    listItem.textContent = searchValues[i];
+    listItem.addEventListener('click', searchFunc);
+    list.appendChild(listItem);
+  }
+}
+
+//Days and months
 const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 // dayjs.extend(window.dayjs_plugin_utc);
 // dayjs.extend(window.dayjs_plugin_timezone)
 
-
+// Checks the time every second to update it properly
 setInterval(() => {
   const time = new Date();
   const month = time.getMonth();
@@ -32,17 +62,15 @@ setInterval(() => {
 }, 1000);
 
 
-//api.openweathermap.org/data/2.5/forecast?q={city name}&appid={API key} 
-//add search bar with submitted text passed into api as {city name}
 getWeather();
 
+//gets location from browser and displays weather
 function getWeather() {
   navigator.geolocation.getCurrentPosition((success) => {
     //const apiKey = '';
     let { latitude, longitude } = success.coords;
-    //let {API_Key} = apiKey;
+    //api call
     fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=02de89be83267d4702049938b828e151&units=imperial`).then(res => res.json().then(data => {
-      console.log(data);
       showWeatherData(data);
     }))
 
@@ -52,13 +80,12 @@ getWeather();
 
 function showWeatherData(data) {
 
-
-  // timeZoneEl.innerHTML = data.timezone;
-  // countryEl.innerHTML = data.lat + 'N' + data.lon + 'W'
+  //Creates objects for humidity, pressure and wind speed from api call values
   let { humidity } = data.list[0].main;
   let { pressure } = data.list[0].main;
   let { speed } = data.list[0].wind;
   currWeatherItemsEl.innerHTML =
+    //creates html with objects passed in 
     `<div class='weather-item'>
   <div>Humidity</div>
   <div>${humidity}%</div>
@@ -71,12 +98,11 @@ function showWeatherData(data) {
 <div>Wind Speed</div>
 <div>${speed} mph</div>
 `;
-  console.log('test');
   let otherDayForecast = ''
   days.forEach((days, idx) => {
     if (idx == 0) {
       currentTempEl.innerHTML = `
-      <img src='http://openweathermap.org/img/wn/${data.list[0].weather[0].icon}@4x.png' alt='weather icon' class='w-icon'>
+      <img src='https://openweathermap.org/img/wn/${data.list[0].weather[0].icon}@4x.png' alt='weather icon' class='w-icon'>
       <div class='other'>
         <div class='day'>${window.moment(days.dt * 1000).format('ddd')}</div>
         <div class='temp'>${data.list[0].main.temp_min}&#176; F</div>
@@ -87,7 +113,7 @@ function showWeatherData(data) {
       otherDayForecast += `
       <div class='weather-forecast-item'>
           <div class='day'>${window.moment(days.dt * 1000).format('ddd')}</div>
-          <img src='http://openweathermap.org/img/wn/${data.list[8].weather[0].icon}@2x.png' alt='weather icon' class='w-icon'>
+          <img src='https://openweathermap.org/img/wn/${data.list[8].weather[0].icon}@2x.png' alt='weather icon' class='w-icon'>
           <div class='temp'>${data.list[8].main.temp_min}&#176; F</div>
           <div class='temp'>${data.list[8].main.temp_max}&#176; F</div>
         </div>
@@ -98,19 +124,22 @@ function showWeatherData(data) {
 
 }
 
+//gets coordinates from searched city name
 function getCoordinates() {
-  var inputCity = document.getElementById('inputCity')
-  let { city } = inputCity.value; //needs to be value saved to and gotten from local storage?
-  fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=02de89be83267d4702049938b828e151`) 
-  .then((response) => response.json())
-  .then((data) => console.log(data))
+
+  let { cityName } = searchValues;
+  fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=5&appid=02de89be83267d4702049938b828e151`)
+    .then((response) => response.json())
+    .then((data) => console.log(data))
 
 }
 
-getCoordinates();
 
-function getCurrentWeather() { 
+//gets current weather for coordinates searched
+function getCurrentWeather() {
+
   fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=`)
-  .then((response) => response.json())
-  .then((data) => console.log(data))
+    .then((response) => response.json())
+    .then((data) => console.log(data))
+
 }
