@@ -12,20 +12,21 @@ var local = document.getElementById('localstorage');
 
 var inputCity = document.getElementById('inputCity');
 var searchBtn = document.getElementById('searchBtn');
-var searchValues = ['madison',];
+var searchValues = ['madison'];
 
 //Saves to local storage
-searchValues = JSON.parse(localStorage.getItem('inputCity'));
+searchValues = JSON.parse(localStorage.getItem('inputCity')) || [];
 var list = document.getElementById('list');
 //Runs searchFunc function on click
 searchBtn.addEventListener('click', searchFunc);
 
 //Pushes inputCity value to searchValues array 
 function searchFunc() {
+  console.log('here is searchValues', searchValues);
+  console.log('here is inputCity', inputCity);
   searchValues.push(inputCity);
-  localStorage.setItem('inputCity', JSON.stringify(searchValues));
+  localStorage.setItem('inputCity', JSON.stringify(searchValues.value));
   appendToPage();
-  console.log(searchValues);
 }
 
 //appends search results to unordere list on page
