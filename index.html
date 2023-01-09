@@ -4,10 +4,49 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Weather Dashboard
-  </title>
+  <title>Weather Dashboard</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  
+
+  <div class="container">
+    <div class="current-info">
+
+      <div class="date-container">
+        <div class="time" id="time">
+          12:30 <span id="am-pm">PM</span>
+        </div>
+        <div class="date" id="date">
+          Sunday, 8 January
+        </div>
+        <div class="others" id="current-weather-items">
+          <div class="weather-item">
+            <div>Humidity</div>
+            <div>95.2%</div>
+          </div>
+          <div class="weather-item">
+            <div>Pressure</div>
+            <div>121</div>
+          </div>
+          <div class="weather-item">
+            <div>Wind Speed</div>
+            <div>222</div>
+          </div>
+        </div>
+      </div>
+      <div class="place-container">
+        <div class="time-zone" id="time-zone">UTC-6</div>
+        <div id="country" class="country">USA</div>
+      </div>
+    </div>
+    <div class="future-forecast">
+      <div class="today" id="current-temp">
+        <img src="" alt="weather icon" class="w-icon">
+        <div class="day">Monday</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
